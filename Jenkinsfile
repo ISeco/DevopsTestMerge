@@ -58,7 +58,7 @@ pipeline {
               script {
                 sh "aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID"
                 sh "aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY"
-                sh "aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin ${imagenName}"
+                sh "aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin ${imageName}"
               }
             }
 
