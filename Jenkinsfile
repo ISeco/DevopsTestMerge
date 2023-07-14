@@ -48,25 +48,36 @@ pipeline {
           script {
             def gitCommitShort = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
             def imageName = "${ECR_REPO_URI}:${gitCommitShort}"
+            def imageNameLatest = "${ECR_REPO_URI}:latest"
             echo "Git SHA commit (Short): ${gitCommitShort}"
             echo "ECR Image Name: ${imageName}"
             
             // Construir y etiquetar la imagen del Dockerfile con el SHA commit abreviado
             sh "docker build -t ${imageName} ."
+            sh "docker build -t ${imageNameLatest} ."
             
             withCredentials([usernamePassword(credentialsId: 'ecr-credentials', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
               script {
                 sh "aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID"
                 sh "aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY"
-                sh "aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin ${imageName}"
+                sh "aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin ${ECR_REPO_URI}"
               }
             }
 
             // Subir la imagen a ECR
             sh "docker push ${imageName}"
+            sh "docker push ${imageNameLatest}"
           }
         }
       }
     }
+    // stage('Deploy to EKS') {
+    //   steps {
+    //     script {
+    //       // Aplicar los archivos de manifiesto YAML de Kubernetes en EKS
+    //       sh 'kubectl apply -f path/to/kubernetes/resources'
+    //     }
+    //   }
+    // }
   }
 }

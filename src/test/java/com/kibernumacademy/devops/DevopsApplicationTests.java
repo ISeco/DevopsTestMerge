@@ -36,5 +36,8 @@ class DevopsApplicationTests {
 
         assertTrue(foundMiguel.isPresent());
         assertTrue(foundCamila.isPresent());
+
+        repository.delete(student3);
+        repository.delete(student4);
     }
 }
