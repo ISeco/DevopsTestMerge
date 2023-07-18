@@ -35,13 +35,6 @@ pipeline {
         }
       }
     }
-    // stage('Quality Gate'){
-    //   steps{
-    //     timeout(time:1, unit:'HOURS'){
-    //       waitForQualityGate abortPipeline:true
-    //     }
-    //   }
-    // }
     stage('Build and Push Image') {
       steps {
         withCredentials([string(credentialsId: 'ecr-repo-uri', variable: 'ECR_REPO_URI')]) {
@@ -71,13 +64,5 @@ pipeline {
         }
       }
     }
-    // stage('Deploy to EKS') {
-    //   steps {
-    //     script {
-    //       // Aplicar los archivos de manifiesto YAML de Kubernetes en EKS
-    //       sh 'kubectl apply -f path/to/kubernetes/resources'
-    //     }
-    //   }
-    // }
   }
 }
